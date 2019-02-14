@@ -6,9 +6,79 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #212529;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #057a6f;
+  border-radius: 10px;
+}
+
+.table {
+  font-size: 13px;
+}
+
+.card {
+  height: 250px;
+  padding: 10px;
+  background-color: #343a40;
+  color: #00b5a3;
+}
+
+.appHealth {
+  font-size: 15px;
+  background-color: darkslategrey;
+}
+
+.leftCol > div {
+  margin: 15px -7px 15px 0px;
+}
+
+.rightCol > div {
+  margin: 15px 0px 15px -7px;
+}
+
+.failureTable {
+  width: 60%;
+  overflow: auto;
+  font-size: 15px;
+}
+
+/* width */
+.failureTable::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+.failureTable::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+/* Handle */
+.failureTable::-webkit-scrollbar-thumb {
+  background: #057a6f;
+  border-radius: 10px;
+}
+
+.redBackground {
+  background-color: #571c1c8f;
+  color: #ffc8c8;
 }
