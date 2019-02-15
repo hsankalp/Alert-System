@@ -3,20 +3,14 @@ import UpdateTS from "./UpdateTS";
 
 class BatchJobCard extends Component {
   state = {
-    batchjobs: [],
-    lastUpdated: "Unknown"
+    failedJobs: [],
+    lastUpdated: new Date().toLocaleTimeString()
   };
 
   componentDidMount() {
-    fetch("http://localhost:8080/api/jobs")
-      .then(response => response.json())
-      .then(data =>
-        this.setState({
-          batchjobs: data,
-          lastUpdated: new Date().toLocaleTimeString()
-        })
-      );
+    this.fetchJobsStatus();
   }
+
   render() {
     return (
       <div className="card">
@@ -24,26 +18,37 @@ class BatchJobCard extends Component {
           <h4>{this.props.orderType}</h4>
           <UpdateTS lastUpdated={this.state.lastUpdated} />
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Job</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.batchjobs
-              .filter(job => job.status === "FAILED")
-              .map(job => (
+        {this.state.failedJobs.length > 0 ? (
+          <table>
+            <thead>
+              <tr>
+                <th>Job</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.failedJobs.map(job => (
                 <tr key={job.jobName}>
                   <td>{job.jobName}</td>
                   <td>{job.status}</td>
                 </tr>
               ))}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        ) : null}
       </div>
     );
   }
+
+  fetchJobsStatus = () => {
+    fetch("http://localhost:8080/api/jobs")
+      .then(response => response.json())
+      .then(data =>
+        this.setState({
+          failedJobs: data.filter(job => job.status === "FAILED"),
+          lastUpdated: new Date().toLocaleTimeString()
+        })
+      );
+  };
 }
 export default BatchJobCard;

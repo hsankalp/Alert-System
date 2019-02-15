@@ -4,17 +4,19 @@ class FailureTable extends Component {
   state = {
     failures: []
   };
+
   componentDidMount() {
-    fetch("http://localhost:8080/api/failure?orderType=" + this.props.orderType)
-      .then(response => response.json())
-      .then(data =>
-        this.setState({
-          failures: data
-        })
-      );
+    this.fetchFailureInfo();
   }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.failedCount !== this.props.failedCount) {
+      this.fetchFailureInfo();
+    }
+  }
+
   render() {
-    return (
+    return this.props.failedCount > 0 ? (
       <table>
         <thead>
           <tr>
@@ -31,8 +33,22 @@ class FailureTable extends Component {
           ))}
         </tbody>
       </table>
-    );
+    ) : null;
   }
+
+  fetchFailureInfo = () => {
+    if (this.props.failedCount > 0) {
+      fetch(
+        "http://localhost:8080/api/failure?orderType=" + this.props.orderType
+      )
+        .then(response => response.json())
+        .then(data =>
+          this.setState({
+            failures: data
+          })
+        );
+    }
+  };
 }
 
 export default FailureTable;

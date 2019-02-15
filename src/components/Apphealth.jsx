@@ -4,25 +4,20 @@ import UpdateTS from "./UpdateTS";
 class AppHealth extends Component {
   state = {
     healthCode: 0,
-    lastUpdated: "Unknown"
+    lastUpdated: new Date().toLocaleTimeString(),
+    background: "redAlert"
   };
 
   componentDidMount() {
-    fetch("http://localhost:8080/api/health")
-      .then(response => response.text())
-      .then(data =>
-        this.setState({
-          healthCode: data,
-          lastUpdated: new Date().toLocaleTimeString()
-        })
-      );
+    this.checkAppHealth();
+    this.timer = setInterval(() => this.checkAppHealth(), 5000);
   }
 
   render() {
     return (
       <div
         className={
-          "appHealth d-flex justify-content-between " + this.getBackround()
+          "appHealth d-flex justify-content-between " + this.state.background
         }
       >
         <div className="p-1">{this.props.appName}</div>
@@ -33,8 +28,34 @@ class AppHealth extends Component {
     );
   }
 
-  getBackround() {
-    return this.state.healthCode == 4 ? "redBackground" : "";
+  checkAppHealth = () => {
+    fetch("http://localhost:8080/api/health")
+      .then(response => {
+        if (!response.ok) {
+          throw Error();
+        }
+        return response.text();
+      })
+      .then(data => {
+        if (data == 4) {
+          throw Error();
+        }
+        return this.setState({
+          healthCode: data,
+          lastUpdated: new Date().toLocaleTimeString(),
+          background: ""
+        });
+      })
+      .catch(() =>
+        this.setState({
+          lastUpdated: new Date().toLocaleTimeString(),
+          background: "redAlert"
+        })
+      );
+  };
+
+  componentWillUnmount() {
+    this.timer = null;
   }
 }
 

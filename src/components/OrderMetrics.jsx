@@ -8,10 +8,37 @@ class OrderMetrics extends Component {
       fleetCount: {},
       retailCount: {}
     },
-    lastUpdated: "Unknown"
+    lastUpdated: new Date().toLocaleTimeString()
   };
 
   componentDidMount() {
+    this.fetchOrderMetrics();
+    this.timer = setInterval(() => this.fetchOrderMetrics(), 5000);
+  }
+
+  render() {
+    return (
+      <div className="col leftCol">
+        <OrderMetricsCard
+          orderType="auto"
+          orderCount={this.state.orderMetrics.autoCount}
+          lastUpdated={this.state.lastUpdated}
+        />
+        <OrderMetricsCard
+          orderType="fleet"
+          orderCount={this.state.orderMetrics.fleetCount}
+          lastUpdated={this.state.lastUpdated}
+        />
+        <OrderMetricsCard
+          orderType="retail"
+          orderCount={this.state.orderMetrics.retailCount}
+          lastUpdated={this.state.lastUpdated}
+        />
+      </div>
+    );
+  }
+
+  fetchOrderMetrics = () => {
     fetch("http://localhost:8080/api/orders")
       .then(response => response.json())
       .then(data =>
@@ -20,28 +47,10 @@ class OrderMetrics extends Component {
           lastUpdated: new Date().toLocaleTimeString()
         })
       );
-  }
+  };
 
-  render() {
-    return (
-      <div className="col leftCol">
-        <OrderMetricsCard
-          orderType="AUTO"
-          orderCount={this.state.orderMetrics.autoCount}
-          lastUpdated={this.state.lastUpdated}
-        />
-        <OrderMetricsCard
-          orderType="FLEET"
-          orderCount={this.state.orderMetrics.fleetCount}
-          lastUpdated={this.state.lastUpdated}
-        />
-        <OrderMetricsCard
-          orderType="RETAIL"
-          orderCount={this.state.orderMetrics.retailCount}
-          lastUpdated={this.state.lastUpdated}
-        />
-      </div>
-    );
+  componentWillUnmount() {
+    this.timer = null;
   }
 }
 

@@ -6,9 +6,9 @@ class OrderMetricsCard extends Component {
   state = {};
   render() {
     return (
-      <div className="card">
+      <div className={"card " + this.getBackground()}>
         <div className="d-flex justify-content-between">
-          <h4>{this.props.orderType}</h4>
+          <h4>{this.props.orderType.toUpperCase()}</h4>
           <UpdateTS lastUpdated={this.props.lastUpdated} />
         </div>
         <div className="d-flex justify-content-between">
@@ -20,11 +20,18 @@ class OrderMetricsCard extends Component {
             <p>Internal Errors: {this.props.orderCount.internal}</p>
           </div>
           <div className="failureTable">
-            <FailureTable orderType={this.props.orderType} />
+            <FailureTable
+              orderType={this.props.orderType}
+              failedCount={this.props.orderCount.failed}
+            />
           </div>
         </div>
       </div>
     );
+  }
+
+  getBackground() {
+    return this.props.orderCount.internal > 0 ? "redAlert" : "";
   }
 }
 
